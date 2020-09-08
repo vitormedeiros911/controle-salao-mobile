@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   leftContent: {
     marginVertical: 10,
     backgroundColor: '#816AC3',
-    width: 90,
+    width: 100,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8
@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   rightContent: {
     marginVertical: 10,
     backgroundColor: '#D82727',
-    width: 90,
+    width: 100,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8

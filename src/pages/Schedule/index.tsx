@@ -42,7 +42,7 @@ const Schedule: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.subHeader}>
           <Text style={styles.subTitle}>Agendamentos</Text>
-          <AddButton />
+          <AddButton page="Agendar"/>
         </View>
         <SearchBar />
         {schedules.length === 0 ? (
