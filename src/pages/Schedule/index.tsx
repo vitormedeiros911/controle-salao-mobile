@@ -15,8 +15,13 @@ import Card from "../../components/Card";
 interface Schedule {
   id: number;
   date: Date;
-  clientId: number;
-  procedureId: number;
+  client: {
+    name: string;
+  };
+  procedure: {
+    name: string;
+    cost: number;
+  };
   status: string;
 }
 
@@ -25,7 +30,9 @@ const Schedule: React.FC = () => {
 
   useEffect(() => {
     api.get("schedule").then((response) => {
-      setSchedules(response.data);
+      if (response.status === 200) {
+        setSchedules(response.data);
+      }
     });
   }, []);
 
@@ -52,8 +59,13 @@ const Schedule: React.FC = () => {
                 <Text style={[styles.text, { fontSize: 16 }]}>
                   Horário: {schedule.date}
                 </Text>
-                <Text style={styles.text}>Cliente: {schedule.clientId}</Text>
-                <Text style={styles.text}>Preço: {schedule.procedureId}</Text>
+                <Text style={styles.text}>Cliente: {schedule.client.name}</Text>
+                <Text style={styles.text}>
+                  Procedimento: {schedule.procedure.name}
+                </Text>
+                <Text style={styles.text}>
+                  Preço: {schedule.procedure.cost}
+                </Text>
                 <Text style={styles.text}>Status: {schedule.status}</Text>
               </Card>
             ))}

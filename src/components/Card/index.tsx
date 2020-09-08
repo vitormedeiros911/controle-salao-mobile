@@ -29,7 +29,7 @@ const Card: React.FC = ({ children }) => {
     <Swipeable
       renderRightActions={getRightContent}
       renderLeftActions={getLeftContent}
-      friction={2.8}
+      friction={4.2}
     >
       <View style={styles.container}>{children}</View>
     </Swipeable>
