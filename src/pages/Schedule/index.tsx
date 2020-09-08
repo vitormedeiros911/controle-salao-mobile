@@ -64,7 +64,7 @@ const Schedule: React.FC = () => {
                   Procedimento: {schedule.procedure.name}
                 </Text>
                 <Text style={styles.text}>
-                  Preço: {schedule.procedure.cost}
+                  Preço: R$ {schedule.procedure.cost}
                 </Text>
                 <Text style={styles.text}>Status: {schedule.status}</Text>
               </Card>

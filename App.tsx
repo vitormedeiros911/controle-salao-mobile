@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
-import React, { useState, useEffect } from "react";
-import Schedule from "./src/pages/Schedule/index";
+
+import DrawerNav from './src/routes/DrawerNav';
 
 const customFonts = {
   Sedan: require("./assets/fonts/Sedan-Regular.ttf"),
@@ -25,7 +26,7 @@ export default function App() {
     return (
       <>
         <StatusBar style="light" translucent />
-        <Schedule />
+        <DrawerNav />
       </>
     );
   }

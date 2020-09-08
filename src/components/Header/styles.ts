@@ -8,13 +8,20 @@ export const styles = StyleSheet.create({
     paddingTop: 40,
     backgroundColor: "#816AC3",
     flexDirection: "row",
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   title: {
     color: "#fff",
     fontSize: 20,
-    fontFamily: 'Sedan'
+    fontFamily: "Sedan",
+  },
+
+  bars: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
