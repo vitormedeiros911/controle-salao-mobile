@@ -51,7 +51,7 @@ const CreateSchedule: React.FC = () => {
       datePicker = (
         <View>
           <RectButton
-            style={styles.datePicker}
+            style={styles.input}
             onPress={() => setShowDatePicker(true)}
           >
             <Text style={styles.date}>{dateString}</Text>
@@ -73,7 +73,7 @@ const CreateSchedule: React.FC = () => {
         <Form>
           {getDatePicker()}
           <Picker
-            style={styles.picker}
+            style={styles.input}
             selectedValue={clientId}
             onValueChange={(value, _i) =>
               setClientId(Number(value))

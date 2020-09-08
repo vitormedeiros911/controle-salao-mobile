@@ -26,24 +26,10 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 5,
     padding: 12,
+    marginVertical: 10
   },
 
   date: {
     fontSize: 18,
   },
-
-  datePicker: {
-    width: 300,
-    height: 55,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 6,
-    marginVertical: 20,
-    backgroundColor: "#fff",
-  },
-
-  picker: {
-    width: 300,
-    height: 55
-  }
 });
