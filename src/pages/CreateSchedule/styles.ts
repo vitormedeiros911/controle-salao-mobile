@@ -29,7 +29,8 @@ export const styles = StyleSheet.create({
     marginVertical: 10
   },
 
-  date: {
-    fontSize: 18,
+  label: {
+    fontSize: 16,
+    fontFamily: 'Sedan'
   },
 });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, SafeAreaView } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
+import moment from "moment";
 
 import { styles } from "./styles";
 
@@ -57,7 +58,7 @@ const Schedule: React.FC = () => {
             {schedules.map((schedule: Schedule) => (
               <Card key={String(schedule.id)}>
                 <Text style={[styles.text, { fontSize: 16 }]}>
-                  Horário: {schedule.date}
+                  Horário: {moment(schedule.date).format('DD/MM/YYYY')}
                 </Text>
                 <Text style={styles.text}>Cliente: {schedule.client.name}</Text>
                 <Text style={styles.text}>
