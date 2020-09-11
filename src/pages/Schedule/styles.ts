@@ -20,7 +20,6 @@ export const styles = StyleSheet.create({
   },
 
   text: {
-    fontFamily: "Sedan",
     fontSize: 14,
   },
 

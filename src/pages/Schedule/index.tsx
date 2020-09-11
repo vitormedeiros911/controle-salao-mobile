@@ -16,6 +16,7 @@ import Card from "../../components/Card";
 interface Schedule {
   id: number;
   date: Date;
+  time: Date;
   client: {
     name: string;
   };
@@ -43,7 +44,7 @@ const Schedule: React.FC = () => {
       <View style={styles.container}>
         <View style={styles.subHeader}>
           <Text style={styles.subTitle}>Agendamentos</Text>
-          <AddButton page="Agendar"/>
+          <AddButton page="Agendar" />
         </View>
         <SearchBar />
         {schedules.length === 0 ? (
@@ -58,7 +59,8 @@ const Schedule: React.FC = () => {
             {schedules.map((schedule: Schedule) => (
               <Card key={String(schedule.id)}>
                 <Text style={[styles.text, { fontSize: 16 }]}>
-                  Horário: {moment(schedule.date).format('DD/MM/YYYY')}
+                  Horário: {moment(schedule.date).format("DD/MM/YYYY")} -{" "}
+                  {moment(schedule.time).format("HH:mm")}
                 </Text>
                 <Text style={styles.text}>Cliente: {schedule.client.name}</Text>
                 <Text style={styles.text}>

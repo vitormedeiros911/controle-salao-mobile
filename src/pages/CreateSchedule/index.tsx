@@ -28,10 +28,15 @@ const CreateSchedule: React.FC = () => {
   const [clientId, setClientId] = useState<number>(0);
   const [procedureId, setProcedureId] = useState<number>(0);
   const [date, setDate] = useState<Date>(new Date());
+  const [time, setTime] = useState<Date>(new Date());
   const [dateString, setDateString] = useState(
     moment(new Date()).format("DD/MM/YYYY")
   );
+  const [timeString, setTimeString] = useState(
+    moment(new Date()).format("HH:mm")
+  );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
 
   useEffect(() => {
     api.get("client").then((response) => {
@@ -48,10 +53,11 @@ const CreateSchedule: React.FC = () => {
       <DateTimePicker
         value={date}
         onChange={(_, date: any) => {
+          setShowDatePicker(false);
           setDate(new Date(date));
           setDateString(moment(date).format("DD/MM/YYYY"));
-          setShowDatePicker(false);
         }}
+        minimumDate={new Date()}
         mode="date"
         locale="pt-br"
       />
@@ -72,6 +78,38 @@ const CreateSchedule: React.FC = () => {
     }
 
     return datePicker;
+  };
+
+  const getTimePicker = () => {
+    let timePicker = (
+      <DateTimePicker
+        value={time}
+        onChange={(_, time: any) => {
+          setShowTimePicker(false);
+          setTime(new Date(time));
+          setTimeString(moment(time).format("HH:mm"));
+        }}
+        mode="time"
+        locale="pt-br"
+        is24Hour
+      />
+    );
+
+    if (Platform.OS === "android") {
+      timePicker = (
+        <View>
+          <RectButton
+            onPress={() => setShowTimePicker(true)}
+            style={styles.input}
+          >
+            <Text>{timeString}</Text>
+          </RectButton>
+          {showTimePicker && timePicker}
+        </View>
+      );
+    }
+
+    return timePicker;
   };
 
   const handleSubmitSchedule = () => {
@@ -99,6 +137,8 @@ const CreateSchedule: React.FC = () => {
         <Form submit={handleSubmitSchedule}>
           <Text style={styles.label}>Data</Text>
           {getDatePicker()}
+          <Text style={styles.label}>Horário</Text>
+          {getTimePicker()}
           <Text style={styles.label}>Cliente</Text>
           <Picker
             style={styles.input}
