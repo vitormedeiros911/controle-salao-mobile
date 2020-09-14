@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     width: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8
+    borderRadius: 4
   },
 
   rightContent: {
@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     width: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8
+    borderRadius: 4
   },
 
   text: {

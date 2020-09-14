@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView, Text, Platform, Alert } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { RectButton } from "react-native-gesture-handler";
+import { View, SafeAreaView, Text, Alert } from "react-native";
 import { Picker } from "@react-native-community/picker";
 import moment from "moment";
 
@@ -11,6 +9,10 @@ import Form from "../../components/Form";
 import { api } from "../../services/api";
 
 import { styles } from "./styles";
+import DatePicker from "../../components/Date_TimePicker/DatePicker";
+import TimePicker from "../../components/Date_TimePicker/TimePicker";
+
+import { Schedule } from "../Schedule";
 
 interface Client {
   id: number;
@@ -22,21 +24,30 @@ interface Procedure {
   name: string;
 }
 
-const CreateSchedule: React.FC = () => {
+interface CreateScheduleProps {
+  isEdit?: boolean;
+  schedule: Schedule;
+}
+
+const CreateSchedule: React.FC<CreateScheduleProps> = ({
+  isEdit,
+  schedule,
+}) => {
   const [allClients, setAllClients] = useState<Client[]>([]);
   const [allProcedures, setAllProcedures] = useState<Procedure[]>([]);
   const [clientId, setClientId] = useState<number>(0);
   const [procedureId, setProcedureId] = useState<number>(0);
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<Date>(new Date());
-  const [dateString, setDateString] = useState(
-    moment(new Date()).format("DD/MM/YYYY")
-  );
-  const [timeString, setTimeString] = useState(
-    moment(new Date()).format("HH:mm")
-  );
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-  const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
+  const [status, setStatus] = useState(String);
+
+  if (isEdit && schedule) {
+    setClientId(schedule.clientId);
+    setProcedureId(schedule.procedureId);
+    setDate(schedule.date);
+    setTime(new Date(schedule.time));
+    setStatus(schedule.status);
+  }
 
   useEffect(() => {
     api.get("client").then((response) => {
@@ -48,84 +59,37 @@ const CreateSchedule: React.FC = () => {
     });
   }, []);
 
-  const getDatePicker = () => {
-    let datePicker = (
-      <DateTimePicker
-        value={date}
-        onChange={(_, date: any) => {
-          setShowDatePicker(false);
-          setDate(new Date(date));
-          setDateString(moment(date).format("DD/MM/YYYY"));
-        }}
-        minimumDate={new Date()}
-        mode="date"
-        locale="pt-br"
-      />
-    );
-
-    if (Platform.OS === "android") {
-      datePicker = (
-        <View>
-          <RectButton
-            onPress={() => setShowDatePicker(true)}
-            style={styles.input}
-          >
-            <Text>{dateString}</Text>
-          </RectButton>
-          {showDatePicker && datePicker}
-        </View>
-      );
-    }
-
-    return datePicker;
-  };
-
-  const getTimePicker = () => {
-    let timePicker = (
-      <DateTimePicker
-        value={time}
-        onChange={(_, time: any) => {
-          setShowTimePicker(false);
-          setTime(time);
-          setTimeString(moment(time).format("HH:mm"));
-        }}
-        mode="time"
-        locale="pt-br"
-        is24Hour
-      />
-    );
-
-    if (Platform.OS === "android") {
-      timePicker = (
-        <View>
-          <RectButton
-            onPress={() => setShowTimePicker(true)}
-            style={styles.input}
-          >
-            <Text>{timeString}</Text>
-          </RectButton>
-          {showTimePicker && timePicker}
-        </View>
-      );
-    }
-
-    return timePicker;
-  };
-
   const handleSubmitSchedule = () => {
-    api
-      .post("schedule/new", {
-        date,
-        time: moment(time).format("HH:mm:ss"),
-        clientId,
-        procedureId,
-      })
-      .then(() => {
-        Alert.alert("Sucesso", "Agendamento feito com sucesso");
-      })
-      .catch((response) => {
-        Alert.alert("Erro", `${response.data}`);
-      });
+    if (isEdit && schedule) {
+      api
+        .patch(`schedule/edit/${schedule.id}`, {
+          date,
+          time: moment(time).format("HH:mm:ss"),
+          clientId,
+          procedureId,
+          status
+        })
+        .then(() => {
+          Alert.alert("Sucesso", "Agendamento atualizado com sucesso");
+        })
+        .catch((response) => {
+          Alert.alert("Erro", `${response.data}`);
+        });
+    } else {
+      api
+        .post("schedule/new", {
+          date,
+          time: moment(time).format("HH:mm:ss"),
+          clientId,
+          procedureId,
+        })
+        .then(() => {
+          Alert.alert("Sucesso", "Agendamento feito com sucesso");
+        })
+        .catch((response) => {
+          Alert.alert("Erro", `${response.data}`);
+        });
+    }
   };
 
   return (
@@ -137,9 +101,15 @@ const CreateSchedule: React.FC = () => {
         </View>
         <Form submit={handleSubmitSchedule}>
           <Text style={styles.label}>Data</Text>
-          {getDatePicker()}
+          <DatePicker
+            date={date}
+            handleDateChange={(date) => setDate(new Date(date))}
+          />
           <Text style={styles.label}>Horário</Text>
-          {getTimePicker()}
+          <TimePicker
+            time={time}
+            handleTimeChange={(time) => setTime(new Date(time))}
+          />
           <Text style={styles.label}>Cliente</Text>
           <Picker
             style={styles.input}

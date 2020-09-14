@@ -11,11 +11,14 @@ import Header from "../../components/Header/index";
 import AddButton from "../../components/AddButton";
 import SearchBar from "../../components/SearchBar/index";
 import Card from "../../components/Card";
+import { useNavigation } from "@react-navigation/native";
 
-interface Schedule {
+export interface Schedule {
   id: number;
   date: Date;
   time: string;
+  clientId: number;
+  procedureId: number;
   client: {
     name: string;
   };
@@ -27,6 +30,8 @@ interface Schedule {
 }
 
 const Schedule: React.FC = () => {
+  const { navigate } = useNavigation();
+
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [shouldDelete, setShouldDelete] = useState(false);
@@ -87,7 +92,7 @@ const Schedule: React.FC = () => {
             renderItem={({ item: schedule }) => (
               <Card
                 key={String(schedule.id)}
-                onDelete={() => {
+                onDeletePress={() => {
                   Alert.alert("Confirmar", "Deseja deletar o agendamento?", [
                     { text: "Não", onPress: () => setShouldDelete(false) },
                     {
@@ -99,6 +104,9 @@ const Schedule: React.FC = () => {
                     },
                   ]);
                 }}
+                onEditPress={() =>
+                  navigate("Agendar", { schedule, isEdit: true })
+                }
               >
                 <Text style={[styles.text, { fontSize: 16 }]}>
                   Horário: {moment(schedule.date).format("DD/MM/YYYY")} -{" "}
