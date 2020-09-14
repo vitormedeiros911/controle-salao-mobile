@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState  } from "react";
 import { View, SafeAreaView, Text, Platform, Alert } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { RectButton } from "react-native-gesture-handler";
 import { Picker } from "@react-native-community/picker";
@@ -33,12 +34,12 @@ const CreateSchedule: React.FC = () => {
     moment(new Date()).format("DD/MM/YYYY")
   );
   const [timeString, setTimeString] = useState(
-    moment(new Date()).format("HH:mm")
+    moment(new Date()).format("HH:mm:ss")
   );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
 
-  useEffect(() => {
+  useFocusEffect(() => {
     api.get("client").then((response) => {
       setAllClients(response.data);
     });
@@ -46,7 +47,7 @@ const CreateSchedule: React.FC = () => {
     api.get("procedure/all").then((response) => {
       setAllProcedures(response.data);
     });
-  }, []);
+  });
 
   const getDatePicker = () => {
     let datePicker = (
@@ -86,7 +87,7 @@ const CreateSchedule: React.FC = () => {
         value={time}
         onChange={(_, time: any) => {
           setShowTimePicker(false);
-          setTime(new Date(time));
+          setTime(time);
           setTimeString(moment(time).format("HH:mm"));
         }}
         mode="time"
@@ -116,6 +117,7 @@ const CreateSchedule: React.FC = () => {
     api
       .post("schedule/new", {
         date,
+        time: moment(time).format('HH:mm:ss'),
         clientId,
         procedureId,
       })
