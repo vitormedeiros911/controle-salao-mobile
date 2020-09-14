@@ -6,7 +6,11 @@ import { RectButton } from "react-native-gesture-handler";
 
 import { styles } from "./styles";
 
-const Card: React.FC = ({ children }) => {
+interface CardProps {
+  onDelete?: () => void;
+}
+
+const Card: React.FC<CardProps> = ({ children, onDelete }) => {
   const getLeftContent = () => {
     return (
       <RectButton style={styles.leftContent}>
@@ -18,7 +22,7 @@ const Card: React.FC = ({ children }) => {
 
   const getRightContent = () => {
     return (
-      <RectButton style={styles.rightContent}>
+      <RectButton style={styles.rightContent} onPress={onDelete}>
         <Icon name="trash-alt" size={24} color="#fff" />
         <Text style={[styles.text, { color: "#fff" }]}>Excluir</Text>
       </RectButton>

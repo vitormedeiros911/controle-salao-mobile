@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, SafeAreaView } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { View, Text, SafeAreaView, FlatList, Alert } from "react-native";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import moment from "moment";
 
@@ -29,14 +28,39 @@ interface Schedule {
 
 const Schedule: React.FC = () => {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [shouldDelete, setShouldDelete] = useState(false);
+
+  const loadPage = async () => {
+    const response = await api.get("schedule");
+
+    setSchedules(response.data);
+  };
 
   useEffect(() => {
-    api.get("schedule").then((response) => {
-      if (response.status === 200) {
-        setSchedules(response.data);
-      }
-    });
+    loadPage();
   }, []);
+
+  const refreshList = async () => {
+    setRefreshing(true);
+    await loadPage();
+    setRefreshing(false);
+  };
+
+  const handleDeleteSchedule = async (id: number) => {
+    if (shouldDelete === true) {
+      const response = await api.delete(`schedule/${id}`);
+
+      if (response.status === 200) {
+        Alert.alert("Deu certo!", "Agendento excluído com sucesso");
+        refreshList();
+      } else {
+        Alert.alert("Erro!", `${response.data}`);
+      }
+
+      setShouldDelete(false);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -55,9 +79,27 @@ const Schedule: React.FC = () => {
             </Text>
           </View>
         ) : (
-          <ScrollView>
-            {schedules.map((schedule: Schedule) => (
-              <Card key={String(schedule.id)}>
+          <FlatList
+            data={schedules}
+            onRefresh={refreshList}
+            refreshing={refreshing}
+            keyExtractor={(schedule) => String(schedule.id)}
+            renderItem={({ item: schedule }) => (
+              <Card
+                key={String(schedule.id)}
+                onDelete={() => {
+                  Alert.alert("Confirmar", "Deseja deletar o agendamento?", [
+                    { text: "Não", onPress: () => setShouldDelete(false) },
+                    {
+                      text: "Sim",
+                      onPress: () => {
+                        handleDeleteSchedule(schedule.id);
+                        setShouldDelete(true);
+                      },
+                    },
+                  ]);
+                }}
+              >
                 <Text style={[styles.text, { fontSize: 16 }]}>
                   Horário: {moment(schedule.date).format("DD/MM/YYYY")} -{" "}
                   {schedule.time}
@@ -71,8 +113,8 @@ const Schedule: React.FC = () => {
                 </Text>
                 <Text style={styles.text}>Status: {schedule.status}</Text>
               </Card>
-            ))}
-          </ScrollView>
+            )}
+          />
         )}
       </View>
     </SafeAreaView>
