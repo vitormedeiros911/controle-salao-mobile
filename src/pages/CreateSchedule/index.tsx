@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, Text, Alert } from "react-native";
 import { Picker } from "@react-native-community/picker";
+import { useRoute } from "@react-navigation/native";
+import { AxiosResponse } from "axios";
 import moment from "moment";
-
-import Header from "../../components/Header";
-import Form from "../../components/Form";
 
 import { api } from "../../services/api";
 
 import { styles } from "./styles";
+
+import Header from "../../components/Header";
+import Form from "../../components/Form";
 import DatePicker from "../../components/Date_TimePicker/DatePicker";
 import TimePicker from "../../components/Date_TimePicker/TimePicker";
 
-import { Schedule } from "../Schedule";
+import { Schedule } from "../Schedule/index";
 
 interface Client {
   id: number;
@@ -24,30 +26,22 @@ interface Procedure {
   name: string;
 }
 
-interface CreateScheduleProps {
-  isEdit?: boolean;
-  schedule: Schedule;
+interface Params {
+  scheduleId?: number;
 }
 
-const CreateSchedule: React.FC<CreateScheduleProps> = ({
-  isEdit,
-  schedule,
-}) => {
+const CreateSchedule: React.FC = () => {
+  const { params } = useRoute();
+
+  const { scheduleId } = (params as Params) ?? {};
+
   const [allClients, setAllClients] = useState<Client[]>([]);
   const [allProcedures, setAllProcedures] = useState<Procedure[]>([]);
-  const [clientId, setClientId] = useState<number>(0);
-  const [procedureId, setProcedureId] = useState<number>(0);
-  const [date, setDate] = useState<Date>(new Date());
-  const [time, setTime] = useState<Date>(new Date());
+  const [clientId, setClientId] = useState(0);
+  const [procedureId, setProcedureId] = useState(0);
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
   const [status, setStatus] = useState(String);
-
-  if (isEdit && schedule) {
-    setClientId(schedule.clientId);
-    setProcedureId(schedule.procedureId);
-    setDate(schedule.date);
-    setTime(new Date(schedule.time));
-    setStatus(schedule.status);
-  }
 
   useEffect(() => {
     api.get("client").then((response) => {
@@ -59,21 +53,38 @@ const CreateSchedule: React.FC<CreateScheduleProps> = ({
     });
   }, []);
 
-  const handleSubmitSchedule = () => {
-    if (isEdit && schedule) {
+  useEffect(() => {
+    if (scheduleId) {
       api
-        .patch(`schedule/edit/${schedule.id}`, {
+        .get(`schedule/${scheduleId}`)
+        .then((response: AxiosResponse<Schedule>) => {
+          setClientId(response.data.clientId);
+          setProcedureId(response.data.procedureId);
+          setDate(new Date(response.data.date));
+          setTime(new Date(response.data.time));
+          setStatus(response.data.status);
+        })
+        .catch((response) => {
+          Alert.alert("Erro", `${response.data}`);
+        });
+    }
+  }, [scheduleId]);
+
+  const handleSubmitSchedule = () => {
+    if (scheduleId) {
+      api
+        .patch(`schedule/edit/${scheduleId}`, {
           date,
           time: moment(time).format("HH:mm:ss"),
           clientId,
           procedureId,
-          status
+          status,
         })
         .then(() => {
           Alert.alert("Sucesso", "Agendamento atualizado com sucesso");
         })
         .catch((response) => {
-          Alert.alert("Erro", `${response.data}`);
+          Alert.alert("Erro", `${response.message}`);
         });
     } else {
       api
@@ -87,7 +98,7 @@ const CreateSchedule: React.FC<CreateScheduleProps> = ({
           Alert.alert("Sucesso", "Agendamento feito com sucesso");
         })
         .catch((response) => {
-          Alert.alert("Erro", `${response.data}`);
+          Alert.alert("Erro", `${response.message}`);
         });
     }
   };

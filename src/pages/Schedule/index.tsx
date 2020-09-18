@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, SafeAreaView, FlatList, Alert } from "react-native";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import moment from "moment";
 
 import { styles } from "./styles";
@@ -11,12 +12,11 @@ import Header from "../../components/Header/index";
 import AddButton from "../../components/AddButton";
 import SearchBar from "../../components/SearchBar/index";
 import Card from "../../components/Card";
-import { useNavigation } from "@react-navigation/native";
 
 export interface Schedule {
   id: number;
   date: Date;
-  time: string;
+  time: Date;
   clientId: number;
   procedureId: number;
   client: {
@@ -105,7 +105,7 @@ const Schedule: React.FC = () => {
                   ]);
                 }}
                 onEditPress={() =>
-                  navigate("Agendar", { schedule, isEdit: true })
+                  navigate("Agendar", { scheduleId: schedule.id })
                 }
               >
                 <Text style={[styles.text, { fontSize: 16 }]}>

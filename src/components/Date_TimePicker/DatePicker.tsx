@@ -8,12 +8,12 @@ import { styles } from "./styles";
 
 interface DatePickerProps {
   date: Date;
-  handleDateChange: (date: any) => void;
+  handleDateChange: (date: Date) => void;
 }
 
 const DatePicker: React.FC<DatePickerProps> = ({ date, handleDateChange }) => {
   const [dateString, setDateString] = useState(
-    moment(new Date()).format("DD/MM/YYYY")
+    moment(date).format("DD/MM/YYYY")
   );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
@@ -25,7 +25,6 @@ const DatePicker: React.FC<DatePickerProps> = ({ date, handleDateChange }) => {
         handleDateChange(date);
         setDateString(moment(date).format("DD/MM/YYYY"));
       }}
-      minimumDate={new Date()}
       mode="date"
       locale="pt-br"
     />

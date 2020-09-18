@@ -13,7 +13,7 @@ interface TimePickerProps {
 
 const TimePicker: React.FC<TimePickerProps> = ({ time, handleTimeChange }) => {
   const [timeString, setTimeString] = useState(
-    moment(new Date()).format("HH:mm")
+    moment(time).format("HH:mm")
   );
   const [showTimePicker, setShowTimePicker] = useState<boolean>(false);
 
