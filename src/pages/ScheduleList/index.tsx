@@ -29,7 +29,7 @@ export interface Schedule {
   status: string;
 }
 
-const Schedule: React.FC = () => {
+const ScheduleList: React.FC = () => {
   const { navigate } = useNavigation();
 
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -129,4 +129,4 @@ const Schedule: React.FC = () => {
   );
 };
 
-export default Schedule;
+export default ScheduleList;
