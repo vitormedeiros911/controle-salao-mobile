@@ -14,7 +14,7 @@ import Form from "../../components/Form";
 import DatePicker from "../../components/Date_TimePicker/DatePicker";
 import TimePicker from "../../components/Date_TimePicker/TimePicker";
 
-import { Schedule } from "../Schedule/index";
+import { Schedule } from "../ScheduleList";
 
 interface Client {
   id: number;
